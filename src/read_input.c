@@ -24,6 +24,15 @@ char * read_input(char * prompt) {
             break;
         }
 
+        if (ch == 127) {
+            if (size > 0) {
+                printf("\b \b");
+                line[size] = 0;
+                size--;
+            }
+            continue;
+        }
+
         if (size >= real_size) {
             real_size *= 2;
             line = (char *)realloc(line, sizeof(char) * real_size);
