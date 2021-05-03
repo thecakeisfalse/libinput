@@ -2,7 +2,7 @@
 
 void main() {
     enable_highlight();
-    add_pattern("12", 34);
-    add_pattern("34", 35);
+    enable_history();
+    add_history("Hello, World!");
     printf("%s\n", read_input("> "));
 }

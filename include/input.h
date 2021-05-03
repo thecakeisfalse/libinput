@@ -29,6 +29,12 @@ int highlight_enabled(void);
 void add_pattern(char * pattern, int color);
 char * highlight(char * line);
 
+void enable_history(void);
+int history_enabled(void);
+void add_history(char * string);
+char * previous_history(void);
+char * next_history(void);
+
 regmatch_result_t * regmatch(char * string, char * pattern);
 void regmatchfree(regmatch_result_t * result);
 regmatch_result_t ** regmatch_all(char * string, char * pattern);
