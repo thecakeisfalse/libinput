@@ -1,5 +1,6 @@
 #include "input.h"
 #include <stdlib.h>
+#include <string.h>
 
 static char * line;
 static int size = 0;
@@ -7,6 +8,8 @@ static int real_size = 2;
 
 char * read_input(char * prompt) {
     char ch;
+    int do_highlight = highlight_enabled();
+    char * temp;
 
     printf("%s", prompt);
 
@@ -17,9 +20,8 @@ char * read_input(char * prompt) {
     line = (char *)calloc(sizeof(char), real_size);
 
     while ((ch = getch())) {
-        putchar(ch);
-
         if (ch == '\n') {
+            putchar(ch);
             line[size] = 0;
             break;
         }
@@ -36,9 +38,20 @@ char * read_input(char * prompt) {
         if (size >= real_size) {
             real_size *= 2;
             line = (char *)realloc(line, sizeof(char) * real_size);
+            memset(line+size, 0, real_size-size);
         }
 
         line[size++] = ch;
+
+        if (do_highlight) {
+            temp = highlight(line);
+        } else {
+            temp = sdup(line);
+        }
+
+
+        printf("\r%s%s", prompt, temp);
+        free(temp);
     }
 
     return line;

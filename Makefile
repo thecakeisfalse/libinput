@@ -6,14 +6,14 @@ MKDIR = mkdir
 MSG = echo
 REMOVE = rm
 
-INCLUDE_DIRECTORY = include
-SOURCE_DIRECTORY = src
-BUILD_DIRECTORY = build
+INCLUDE = include
+SOURCE = src
+BUILD = build
 
-CFLAGS = -std=c89 -Wall -Wextra -pedantic-errors -Werror -I $(INCLUDE_DIRECTORY) -g
+CFLAGS = -std=c89 -Wall -Wextra -pedantic-errors -Werror -I $(INCLUDE) -g
 
-SOURCES := $(wildcard $(SOURCE_DIRECTORY)/*.c)
-OBJECTS := $(patsubst $(SOURCE_DIRECTORY)/%.c, $(BUILD_DIRECTORY)/%.o, $(SOURCES))
+SOURCES := $(wildcard $(SOURCE)/*.c)
+OBJECTS := $(patsubst $(SOURCE)/%.c, $(BUILD)/%.o, $(SOURCES))
 LIBRARY = libinput.a
 
 Q = @
@@ -23,18 +23,18 @@ Q = @
 all: help
 
 setup:
-	$(Q) $(MKDIR) -p $(BUILD_DIRECTORY)
+	$(Q) $(MKDIR) -p $(BUILD)
 
 build: setup $(LIBRARY)
 
 clean:
 	$(Q) $(MSG) [Cleaning]
-	$(Q) $(REMOVE) -rf $(OBJECTS) $(BUILD_DIRECTORY)
+	$(Q) $(REMOVE) -rf $(OBJECTS) $(BUILD) $(LIBRARY)
 	$(Q) $(MSG) done
 
 test:
 	$(Q) $(MSG) [Compiling] examples/main.c
-	$(Q) $(CC) examples/main.c -o main -I$(INCLUDE_DIRECTORY) -L. -linput
+	$(Q) $(CC) examples/main.c -o main -I$(INCLUDE) -L. -linput
 	$(Q) $(MSG) done
 	$(Q) $(MSG) Run './main'
 
@@ -48,6 +48,6 @@ $(LIBRARY): $(OBJECTS)
 	$(Q) $(AR) rcs $@ $(OBJECTS)
 	$(Q) $(MSG) done
 
-$(BUILD_DIRECTORY)/%.o: $(SOURCE_DIRECTORY)/%.c
+$(BUILD)/%.o: $(SOURCE)/%.c
 	$(Q) $(MSG) [Compiling] $<
 	$(Q) $(CC) $(CFLAGS) -c $< -o $@

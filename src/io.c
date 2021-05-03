@@ -5,8 +5,8 @@
 #include <termios.h>
 #include <unistd.h>
 
-int getch(void) {
-    int ch;
+char getch(void) {
+    char ch;
     struct termios oldt, newt;
 
     tcgetattr(STDIN_FILENO, &oldt);
