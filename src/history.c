@@ -27,9 +27,9 @@ void add_history(char * string) {
         history_size++;
     } else {
         for (index = 1; index < 1024; index++) {
-            strcpy(history[index - 1], history[index]);
+            strncpy(history[index - 1], history[index], 1024);
         }
-        strcpy(history[1023], string);
+        strncpy(history[1023], string, 1024);
     }
 }
 
