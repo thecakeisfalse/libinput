@@ -3,7 +3,7 @@
 #include <string.h>
 
 static char * line;
-static int index = 0;
+static int idx = 0;
 static int size = 0;
 static int real_size = 2;
 
@@ -53,7 +53,7 @@ char * read_input(char * prompt) {
                         line = (char *)realloc(line, sizeof(char) * size);
                     }
                     strcpy(line, item);
-                    index = size;
+                    idx = size;
                 }
             } else if (ch == 'B') {
                 item = next_history();
@@ -67,17 +67,17 @@ char * read_input(char * prompt) {
                         line = (char *)realloc(line, sizeof(char) * size);
                     }
                     strcpy(line, item);
-                    index = size;
+                    idx = size;
                 }
             } else if (ch == 'C') {
-                if (index < size) {
+                if (idx < size) {
                     printf("\033[C");
-                    index++;
+                    idx++;
                 }
             } else if (ch == 'D') {
-                if (index > 0) {
+                if (idx > 0) {
                     printf("\033[D");
-                    index--;
+                    idx--;
                 }
             }
             continue;
@@ -89,16 +89,16 @@ char * read_input(char * prompt) {
             memset(line+size, 0, real_size-size);
         }
 
-        if (index == size) {
-            line[index++] = ch;
+        if (idx == size) {
+            line[idx++] = ch;
             size++;
         } else {
-            for (i = size-1; i >= index; i--) {
+            for (i = size-1; i >= idx; i--) {
                 line[i+1] = line[i];
             }
-            line[index] = ch;
+            line[idx] = ch;
 
-            index++;
+            idx++;
             size++;
         }
 
@@ -111,7 +111,7 @@ char * read_input(char * prompt) {
         printf("\r%s%s", prompt, result);
         free(result);
 
-        for (i = size; i > index; i--) {
+        for (i = size; i > idx; i--) {
             printf("\033[D");
         }
     }
