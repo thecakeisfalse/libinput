@@ -22,8 +22,8 @@ void add_history(char * string) {
         return;
     }
     if (history_size < 1024) {
-        history[history_size] = (char*)malloc(sizeof(char)*1024);
-        strcpy(history[history_size], string);
+        history[history_size] = (char*)calloc(1024, sizeof(char));
+        strncpy(history[history_size], string, 1024);
         history_size++;
     } else {
         for (index = 1; index < 1024; index++) {
