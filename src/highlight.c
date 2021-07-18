@@ -34,7 +34,7 @@ void add_pattern(char * pattern, int color) {
     } else {
         for (index = 1; index < 1024; index++) {
             strncpy(patterns[index-1].pattern, patterns[index].pattern, 1024);
-            patterns[index-1].color = patters[index].color;
+            patterns[index-1].color = patterns[index].color;
         }
         strncpy(patterns[1023].pattern, pattern, 1024);
         patterns[1023].color = color;
