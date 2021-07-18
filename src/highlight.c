@@ -4,11 +4,11 @@
 
 static int use_highlight = 0;
 
-static pattern_t patterns[1024] = {
+static pattern_t patterns[1025] = {
     {NULL, -1}
 };
 
-int patterns_length = 0;
+static int patterns_length = 0;
 
 int highlight_enabled(void) {
      return use_highlight;
@@ -16,21 +16,29 @@ int highlight_enabled(void) {
 
 void enable_highlight(void) {
     use_highlight = 1;
+    patterns[1024].pattern = NULL;
+    patterns[1024].color = -1;
 }
 
 void add_pattern(char * pattern, int color) {
-    pattern_t ptrn;
     int index = 0;
 
-    ptrn.pattern=pattern;
-    ptrn.color=color;
-
-    for (index = patterns_length-1; index >= 0; index--) {
-        patterns[index+1] = patterns[index];
+    if (!use_highlight) {
+        return;
     }
-    patterns[0] = ptrn;
 
-    patterns_length++;
+    if (patterns_length < 1024) {
+        patterns[patterns_length].color = color;
+        patterns[patterns_length].pattern = (char *)calloc(1024, sizeof(char));
+        strncpy(patterns[patterns_length].pattern, pattern, 1024);
+    } else {
+        for (index = 1; index < 1024; index++) {
+            strncpy(patterns[index-1].pattern, patterns[index].pattern, 1024);
+            patterns[index-1].color = patters[index].color;
+        }
+        strncpy(patterns[1023].pattern, pattern, 1024);
+        patterns[1023].color = color;
+    }
 }
 
 char * highlight(char * string) {
