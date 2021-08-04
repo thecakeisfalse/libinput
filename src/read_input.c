@@ -3,9 +3,9 @@
 #include <string.h>
 
 static char * line;
-static int index = 0;
-static int size = 0;
-static int real_size = 2;
+static int line_index = 0;
+static int line_size = 0;
+static int real_line_size = 2;
 
 char * read_input(char * prompt) {
     char ch;
@@ -20,20 +20,20 @@ char * read_input(char * prompt) {
         free(line);
     }
 
-    line = (char *)calloc(sizeof(char), real_size);
+    line = (char *)calloc(sizeof(char), real_line_size);
 
     while ((ch = getch())) {
         if (ch == '\n') {
             putchar(ch);
-            line[size] = 0;
+            line[line_size] = 0;
             break;
         }
 
         if (ch == 127) {
-            if (size > 0) {
+            if (line_size > 0) {
                 printf("\b \b");
-                line[size] = 0;
-                size--;
+                line[line_size] = 0;
+                line_size--;
             }
             continue;
         }
@@ -44,62 +44,62 @@ char * read_input(char * prompt) {
             if (ch == 'A') {
                 item = previous_history();
                 if (item != NULL) {
-                    for (i = 0; i < size; i++) {
+                    for (i = 0; i < line_size; i++) {
                         printf("\b \b");
                     }
                     printf("\r%s%s", prompt, item);
-                    size = strlen(item);
-                    if (size > real_size) {
-                        line = (char *)realloc(line, sizeof(char) * size);
+                    line_size = strlen(item);
+                    if (line_size > real_line_size) {
+                        line = (char *)realloc(line, sizeof(char) * line_size);
                     }
                     strcpy(line, item);
-                    index = size;
+                    line_index = line_size;
                 }
             } else if (ch == 'B') {
                 item = next_history();
                 if (item != NULL) {
-                    for (i = 0; i < size; i++) {
+                    for (i = 0; i < line_size; i++) {
                         printf("\b \b");
                     }
                     printf("\r%s%s", prompt, item);
-                    size = strlen(item);
-                    if (size > real_size) {
-                        line = (char *)realloc(line, sizeof(char) * size);
+                    line_size = strlen(item);
+                    if (line_size > real_line_size) {
+                        line = (char *)realloc(line, sizeof(char) * line_size);
                     }
                     strcpy(line, item);
-                    index = size;
+                    line_index = line_size;
                 }
             } else if (ch == 'C') {
-                if (index < size) {
+                if (line_index < line_size) {
                     printf("\033[C");
-                    index++;
+                    line_index++;
                 }
             } else if (ch == 'D') {
-                if (index > 0) {
+                if (line_index > 0) {
                     printf("\033[D");
-                    index--;
+                    line_index--;
                 }
             }
             continue;
         }
 
-        if (size >= real_size) {
-            real_size = size * 2;
-            line = (char *)realloc(line, sizeof(char) * real_size);
-            memset(line+size, 0, real_size-size);
+        if (line_size >= real_line_size) {
+            real_line_size = line_size * 2;
+            line = (char *)realloc(line, sizeof(char) * real_line_size);
+            memset(line+line_size, 0, real_line_size-line_size);
         }
 
-        if (index == size) {
-            line[index++] = ch;
-            size++;
+        if (line_index == line_size) {
+            line[line_index++] = ch;
+            line_size++;
         } else {
-            for (i = size-1; i >= index; i--) {
+            for (i = line_size-1; i >= line_index; i--) {
                 line[i+1] = line[i];
             }
-            line[index] = ch;
+            line[line_index] = ch;
 
-            index++;
-            size++;
+            line_index++;
+            line_size++;
         }
 
         if (do_highlight) {
@@ -111,7 +111,7 @@ char * read_input(char * prompt) {
         printf("\r%s%s", prompt, result);
         free(result);
 
-        for (i = size; i > index; i--) {
+        for (i = line_size; i > line_index; i--) {
             printf("\033[D");
         }
     }
