@@ -1,120 +1,94 @@
-#include "input.h"
-#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
-
-static char * line;
-static int line_index = 0;
-static int line_size = 0;
-static int real_line_size = 2;
+#include <stdlib.h>
+#include "libinput.h"
 
 char * read_input(char * prompt) {
-    char ch;
-    int do_highlight = highlight_enabled();
-    char * result;
-    char * item;
-    int i;
+    int i = 0;
+    int current_string_index = 0;
+    int real_string_size = 1;
+    int string_size = 2;
+
+    char * result = NULL;
+    char chr = 0;
+
+    result = (char *)calloc(sizeof(char), string_size);
+    if (result == NULL) {
+        printf("Fatal: failed to allocte %u bytes.\n", string_size);
+        exit(1);
+    }
 
     printf("%s", prompt);
 
-    if (line) {
-        free(line);
-    }
-
-    line = (char *)calloc(sizeof(char), real_line_size);
-
-    while ((ch = getch())) {
-        if (ch == '\n') {
-            putchar(ch);
-            line[line_size] = 0;
+    while ((chr = getch())) {
+        if (chr == '\n') {
+            putchar(chr);
             break;
         }
 
-        if (ch == 127) {
-            if (line_size > 0) {
+        if (chr == 127) {
+            if (real_string_size > 1) {
                 printf("\b \b");
-                line[line_size] = 0;
-                line_size--;
+                result[real_string_size-1] = '\0';
+
+                real_string_size--;
+                current_string_index--;
             }
             continue;
         }
 
-        if (ch == 27) {
+        if (chr == ESCAPE) {
+#ifndef _WIN32
             getch();
-            ch = getch();
-            if (ch == 'A') {
-                item = previous_history();
-                if (item != NULL) {
-                    for (i = 0; i < line_size; i++) {
-                        printf("\b \b");
-                    }
-                    printf("\r%s%s", prompt, item);
-                    line_size = strlen(item);
-                    if (line_size > real_line_size) {
-                        line = (char *)realloc(line, sizeof(char) * line_size);
-                    }
-                    strcpy(line, item);
-                    line_index = line_size;
-                }
-            } else if (ch == 'B') {
-                item = next_history();
-                if (item != NULL) {
-                    for (i = 0; i < line_size; i++) {
-                        printf("\b \b");
-                    }
-                    printf("\r%s%s", prompt, item);
-                    line_size = strlen(item);
-                    if (line_size > real_line_size) {
-                        line = (char *)realloc(line, sizeof(char) * line_size);
-                    }
-                    strcpy(line, item);
-                    line_index = line_size;
-                }
-            } else if (ch == 'C') {
-                if (line_index < line_size) {
+#endif
+            chr = getch();
+
+            if (chr == ARROW_UP) {
+
+            } else if (chr == ARROW_DOWN) {
+
+            } else if (chr == ARROW_LEFT) {
+                if (current_string_index < real_string_size) {
                     printf("\033[C");
-                    line_index++;
+                    current_string_index++;
                 }
-            } else if (ch == 'D') {
-                if (line_index > 0) {
+            } else if (chr == ARROW_RIGHT) {
+                if (current_string_index > 0) {
                     printf("\033[D");
-                    line_index--;
+                    current_string_index--;
                 }
             }
+
             continue;
         }
 
-        if (line_size >= real_line_size) {
-            real_line_size = line_size * 2;
-            line = (char *)realloc(line, sizeof(char) * real_line_size);
-            memset(line+line_size, 0, real_line_size-line_size);
-        }
+        if (real_string_size >= string_size) {
+            string_size <<= 1;
 
-        if (line_index == line_size) {
-            line[line_index++] = ch;
-            line_size++;
-        } else {
-            for (i = line_size-1; i >= line_index; i--) {
-                line[i+1] = line[i];
+            result = (char *)realloc(result, string_size);
+            if (result == NULL) {
+                printf("Fatal: failed to allocte %u bytes.\n", string_size);
+                exit(1);
             }
-            line[line_index] = ch;
 
-            line_index++;
-            line_size++;
+            memset(result+real_string_size, 0, string_size-real_string_size);
         }
 
-        if (do_highlight) {
-            result = highlight(line);
-        } else {
-            result = sdup(line);
+        for (i = real_string_size-1; i >= current_string_index; i--) {
+            result[i+1] = result[i];
         }
+        result[current_string_index] = chr;
+        result[real_string_size] = '\0';
 
-        printf("\r%s%s", prompt, result);
-        free(result);
+        current_string_index++;
+        real_string_size++;
 
-        for (i = line_size; i > line_index; i--) {
+        /*printf("\r%s%s", prompt, result);*/
+
+        for (i = real_string_size-1; i > current_string_index; i--) {
             printf("\033[D");
         }
     }
 
-    return line;
+    return result;
 }

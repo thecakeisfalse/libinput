@@ -1,53 +1,47 @@
-# Makefile
-
-AR = ar
-CC = gcc
-MKDIR = mkdir
-MSG = echo
-REMOVE = rm
+CC      = gcc
+AR      = ar
+MKDIR   = mkdir
+DELETE  = rm
 
 INCLUDE = include
-SOURCE = src
-BUILD = build
+SOURCE  = src
+BUILD   = build
 
-CFLAGS = -std=c89 -Wall -Wextra -pedantic-errors -Werror -I $(INCLUDE) -g
+CFLAGS  = -std=c89 -I$(INCLUDE) -Wall -Wextra -Werror -pedantic-errors -g
 
-SOURCES := $(wildcard $(SOURCE)/*.c)
-OBJECTS := $(patsubst $(SOURCE)/%.c, $(BUILD)/%.o, $(SOURCES))
-LIBRARY = libinput.a
-
-Q = @
+OBJECTS = $(patsubst $(SOURCE)/%.c, $(BUILD)/%.o, $(wildcard $(SOURCE)/*.c))
+TARGET  = libinput.a
 
 .PHONY: all build clean
 
 all: help
 
 setup:
-	$(Q) $(MKDIR) -p $(BUILD)
+	@ $(MKDIR) -p $(BUILD)
 
-build: setup $(LIBRARY)
+build: setup $(TARGET)
 
 clean:
-	$(Q) $(MSG) [Cleaning]
-	$(Q) $(REMOVE) -rf $(OBJECTS) $(BUILD) $(LIBRARY)
-	$(Q) $(MSG) done
+	@ echo [Cleaning]
+	@ $(DELETE) -rf $(OBJECTS) $(BUILD) $(LIBRARY)
+	@ echo done
 
 test:
-	$(Q) $(MSG) [Compiling] examples/main.c
-	$(Q) $(CC) examples/main.c -o main -I$(INCLUDE) -L. -linput
-	$(Q) $(MSG) done
-	$(Q) $(MSG) Run './main'
+	@ echo [Compiling] examples/main.c
+	@ $(CC) examples/main.c -o main -I$(INCLUDE) -L. -linput -g
+	@ echo done
+	@ echo Run './main'
 
 help:
-	$(Q) $(MSG) "Targets:"
-	$(Q) $(MSG) "build - compile and build library"
-	$(Q) $(MSG) "clean - cleanup old .o files"
+	@ echo "Targets:"
+	@ echo "build - compile and build library"
+	@ echo "clean - cleanup old .o files"
 
-$(LIBRARY): $(OBJECTS)
-	$(Q) $(MSG) [Linking] $@
-	$(Q) $(AR) rcs $@ $(OBJECTS)
-	$(Q) $(MSG) done
+$(TARGET): $(OBJECTS)
+	@ echo [Linking] $@
+	@ $(AR) rcs $@ $(OBJECTS)
+	@ echo done
 
 $(BUILD)/%.o: $(SOURCE)/%.c
-	$(Q) $(MSG) [Compiling] $<
-	$(Q) $(CC) $(CFLAGS) -c $< -o $@
+	@ echo [Compiling] $<
+	 $(CC) $(CFLAGS) -c $< -o $@
