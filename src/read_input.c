@@ -83,7 +83,7 @@ char * read_input(char * prompt) {
         current_string_index++;
         real_string_size++;
 
-        /*printf("\r%s%s", prompt, result);*/
+        printf("\r%s%s", prompt, result);
 
         for (i = real_string_size-1; i > current_string_index; i--) {
             printf("\033[D");

@@ -3,12 +3,14 @@
 
 #include <stddef.h>
 
-#include "libinput-regex.h"
+#include "libinput/regex.h"
+#include "libinput/history.h"
+#include "libinput/highlight.h"
 
 #ifdef _WIN32
-#  include "libinput-windows.h"
+#  include "libinput/windows.h"
 #else
-#  include "libinput-unix.h"
+#  include "libinput/unix.h"
 #endif
 
 #ifdef __cplusplus

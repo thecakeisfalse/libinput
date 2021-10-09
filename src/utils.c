@@ -7,8 +7,8 @@ char * replace(char * string, char * old, char * now) {
     int i = 0;
     int result_string_length = 0;
     int old_count = 0;
-    int old_length = 0;
-    int now_length = 0;
+    int old_length = strlen(old);
+    int now_length = strlen(now);
     char * result;
 
     for (i = 0; string[i] != '\0'; i++) {

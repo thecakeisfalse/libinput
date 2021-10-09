@@ -17,7 +17,6 @@ char getch(void) {
     chr = getchar();
     tcsetattr(STDIN_FILENO, TCSANOW, &old_term);
 
-    printf("%d (%c)\n", chr, chr);
     return chr;
 }
 
