@@ -40,6 +40,11 @@ void free_patterns(void) {
     for (index = 0; index < patterns_length; index++) {
         free(patterns[index].pattern);
     }
+
+    patterns[0].pattern = NULL;
+    patterns[0].color = 0;
+
+    patterns_length = 0;
 }
 
 char * highlight(char * string) {
@@ -57,6 +62,7 @@ char * highlight(char * string) {
     if (!use_highlight) {
         return string;
     }
+
     result = (char *)calloc(sizeof(char), strlen(string) * 20);
 
     strcpy(result, string);
