@@ -15,11 +15,11 @@ regmatch_result_t * regmatch(char * string, char * pattern) {
         previous_pattern = (char *)calloc(sizeof(char), 1024);
     }
 
-    if (strcmp(pattern, previous_pattern)) {
-        strcpy(previous_pattern, pattern);
+    if (strncmp(pattern, previous_pattern, 1024)) {
+        snprintf(previous_pattern, 1024, "%s", pattern);
         regfree(&re);
 
-        if (strcmp(pattern, "") == 0) {
+        if (strncmp(pattern, "\0", 1) == 0) {
             free(previous_pattern);
             previous_pattern = NULL;
             return NULL;
@@ -81,7 +81,6 @@ regmatch_result_t ** regmatch_all(char * string, char * pattern) {
 
         if (real_regmatches_size >= regmatches_size) {
             regmatches_size <<= 1;
-            printf("REALLOC %d\n", regmatches_size);
 
             all_regmatches = (regmatch_result_t **)realloc(all_regmatches, sizeof(regmatch_result_t) * regmatches_size);
             if (all_regmatches == NULL) {
