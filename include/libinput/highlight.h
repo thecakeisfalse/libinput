@@ -2,6 +2,7 @@
 #define _LIBINPUT_HIGHLIGHT_H_
 
 #define MAX_PATTERNS_LENGTH 1024
+#define MAX_PATTERN_LENGTH 256
 
 #ifdef __cplusplus
 extern "C" {

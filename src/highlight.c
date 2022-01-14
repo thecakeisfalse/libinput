@@ -1,7 +1,7 @@
 #include "libinput.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 
 static int use_highlight = 0;
 static int patterns_length = 0;
@@ -16,20 +16,20 @@ void disable_highlight(void) {
 }
 
 void add_pattern(char * pattern, int color) {
-    int index = 0;
+    int index;
 
     if (patterns_length < MAX_PATTERNS_LENGTH) {
         patterns[patterns_length].color = color;
-        patterns[patterns_length].pattern = (char *)calloc(1024, sizeof(char));
-        strncpy(patterns[patterns_length].pattern, pattern, 1024);
+        patterns[patterns_length].pattern = (char *)calloc(MAX_PATTERN_LENGTH+1, sizeof(char));
+        snprintf(patterns[patterns_length].pattern, MAX_PATTERN_LENGTH+1, "%s", pattern);
         patterns_length++;
     } else {
         for (index = 1; index < MAX_PATTERNS_LENGTH; index++) {
-            strncpy(patterns[index-1].pattern, patterns[index].pattern, 1024);
+            snprintf(patterns[index-1].pattern, MAX_PATTERN_LENGTH+1, "%s", patterns[index].pattern);
             patterns[index-1].color = patterns[index].color;
         }
 
-        strncpy(patterns[MAX_PATTERNS_LENGTH-1].pattern, pattern, 1024);
+        snprintf(patterns[MAX_PATTERNS_LENGTH-1].pattern, MAX_PATTERN_LENGTH+1, "%s", pattern);
         patterns[MAX_PATTERNS_LENGTH-1].color = color;
     }
 }
@@ -67,7 +67,11 @@ char * highlight(char * string) {
 
     strcpy(result, string);
 
-    while (pattern.pattern != NULL) {
+    while (pattern_offset < patterns_length) {
+        if (pattern.pattern == NULL) {
+            continue;
+        }
+
         regmatches = regmatch_all(string, pattern.pattern);
         regmatch_offset = 0;
 

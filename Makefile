@@ -7,7 +7,7 @@ INCLUDE = include
 SOURCE  = src
 BUILD   = build
 
-CFLAGS  = -std=c89 -I$(INCLUDE) -Wall -Wextra -Werror -pedantic-errors -g
+CFLAGS  = -std=c99 -I$(INCLUDE) -Wall -Wextra -Werror -pedantic-errors -g
 
 OBJECTS = $(patsubst $(SOURCE)/%.c, $(BUILD)/%.o, $(wildcard $(SOURCE)/*.c))
 TARGET  = libinput.a
