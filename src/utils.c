@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "libinput.h"
+#include <libinput.h>
 
 char * replace(char * string, char * old, char * now) {
     int i = 0;

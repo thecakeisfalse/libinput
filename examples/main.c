@@ -1,4 +1,4 @@
-#include "libinput.h"
+#include <libinput.h>
 #include <stdlib.h>
 #include <stdio.h>
 

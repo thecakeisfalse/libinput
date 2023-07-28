@@ -1,4 +1,4 @@
-#include "libinput.h"
+#include <libinput.h>
 
 #ifndef _WIN32
 

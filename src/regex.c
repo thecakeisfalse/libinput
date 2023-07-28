@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <regex.h>
-#include "libinput.h"
+#include <libinput.h>
 
 regmatch_result_t * regmatch(char * string, char * pattern) {
     static regex_t re;

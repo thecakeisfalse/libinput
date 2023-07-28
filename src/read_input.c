@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "libinput.h"
+#include <libinput.h>
 
 char * read_input(char * prompt) {
     int i = 0;
